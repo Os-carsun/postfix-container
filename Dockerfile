@@ -1,5 +1,4 @@
-FROM debian:12 
-#as build
+FROM debian:12-slim 
 
 ARG DEBUG=false
 ARG POSTFIX_DL_SITE="https://de.postfix.org"
@@ -20,7 +19,7 @@ RUN groupadd -g ${POSTFIX_GID} postfix && \
     useradd -u ${POSTFIX_UID} -g ${POSTFIX_GID} -d /no/where -s /no/shell postfix
 
 RUN apt-get update && \
-    apt-get install gpg wget libdb-dev m4 build-essential libicu-dev libpcre3-dev pkg-config -y
+    apt-get install gpg wget libdb-dev libicu-dev libpcre3-dev -y
 
 RUN wget ${POSTFIX_DL_SITE}/${POSTFIX_DL_PATH}/${POSTFIX_TAR} && \
     wget ${POSTFIX_DL_SITE}/${POSTFIX_DL_PATH}/${POSTFIX_TAR}.gpg2
@@ -33,7 +32,12 @@ RUN gpg --import /key.pgp && \
     tar -xvf ${POSTFIX_TAR}
 
 WORKDIR postfix-${POSTFIX_VERSION}
-RUN make makefiles pie=yes dynamicmaps=yes shared=yes DEBUG='-g' 
-RUN make 
-RUN make install -non-interactive && make upgrade
-RUN make clean
+RUN apt-get install build-essential pkg-config m4 -y && \
+    make makefiles pie=yes dynamicmaps=yes shared=yes DEBUG='-g' && \
+    make && \
+    make install -non-interactive && make upgrade && \
+    make clean && \
+    apt autoremove --purge build-essential m4 pkg-config -y 
+
+WORKDIR /
+RUN rm -rf postfix-${POSTFIX_VERSION} "${POSTFIX_TAR}" "${POSTFIX_TAR}.gpg2" key.pgp 
