@@ -1,0 +1,8 @@
+services:
+  postfix:
+    image: postfix-test:latest
+    volumes:
+      - ./spool:/var/spool/postfix
+      - ./postfix:/etc/postfix
+    ports:
+      - '2525:25'

@@ -41,3 +41,9 @@ RUN apt-get install build-essential pkg-config m4 -y && \
 
 WORKDIR /
 RUN rm -rf postfix-${POSTFIX_VERSION} "${POSTFIX_TAR}" "${POSTFIX_TAR}.gpg2" key.pgp 
+
+COPY ./run.sh /run.sh
+RUN chmod +x run.sh
+VOLUME     [ "/var/spool/postfix", "/etc/postfix"]
+
+CMD ["/run.sh"]

@@ -1,0 +1,47 @@
+# Do not edit -- this file documents how Postfix was built for your machine.
+#----------------------------------------------------------------
+# Start of summary of user-configurable 'make makefiles' options.
+# CCARGS=
+# AUXLIBS=
+# shared=yes
+# dynamicmaps=yes
+# pie=yes
+# End of summary of user-configurable 'make makefiles' options.
+#--------------------------------------------------------------
+# System-dependent settings and compiler/linker overrides.
+SYSTYPE	= LINUX6
+_AR	= ar
+ARFL	= rv
+_RANLIB	= ranlib
+SYSLIBS	= -pie -ldb -lnsl -lresolv -ldl -licui18n -licuuc -licudata 
+AUXLIBS_PCRE = -lpcre
+CC	= gcc -fPIC -I. -I../../include -DHAS_DEV_URANDOM -DHAS_PCRE=1 -DUSE_DYNAMIC_LIBS -DUSE_DYNAMIC_MAPS $(WARN)
+OPT	= -O
+DEBUG	= -g
+AWK	= awk
+STRCASE = 
+EXPORT	= CCARGS='-I. -I../../include -DHAS_DEV_URANDOM -DHAS_PCRE=1 -DUSE_DYNAMIC_LIBS -DUSE_DYNAMIC_MAPS' OPT='-O' DEBUG='-g'
+WARN	= -Wall -Wno-comment -Wformat -Wimplicit -Wmissing-prototypes \
+	-Wparentheses -Wstrict-prototypes -Wswitch -Wuninitialized \
+	-Wunused -Wno-missing-braces -fno-common
+DEFINED_MAP_TYPES = dev_urandom pcre
+MAKE_FIX = 
+# Switch between Postfix static and dynamically-linked libraries.
+AR	= :
+RANLIB	= :
+LIB_PREFIX = postfix-
+LIB_SUFFIX = .so
+SHLIB_CFLAGS = -fPIC
+SHLIB_DIR = /usr/lib/postfix
+SHLIB_LD = gcc -shared -Wl,-soname,${LIB}
+SHLIB_SYSLIBS = -ldb -lnsl -lresolv -ldl -licui18n -licuuc -licudata
+SHLIB_RPATH = -Wl,--enable-new-dtags -Wl,-rpath,${SHLIB_DIR}
+# Switch between dynamicmaps.cf plugins and hard-linked databases.
+NON_PLUGIN_MAP_OBJ = 
+PLUGIN_MAP_OBJ = $(MAP_OBJ)
+PLUGIN_MAP_OBJ_UPDATE = plugin_map_obj_update
+PLUGIN_MAP_SO_MAKE = plugin_map_so_make
+PLUGIN_MAP_SO_UPDATE = plugin_map_so_update
+PLUGIN_LD = gcc -shared
+POSTFIX_INSTALL_OPTS = 
+# Application-specific rules.
